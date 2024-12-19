@@ -28,28 +28,30 @@ const executeExit = function () {
 }
 
 const executeTouch = function (args) {
-  file.push(args);
+  file.push(...args);
   return
 }
 
 const executeLs = function () {
-  return file.join("  ")
+  return file.join("  ");
+}
+
+const executeRm = function (args) {
+  const fileName = args.join(" ")
+  return file.filter((element) => element !== fileName).join(" ");
 }
 
 const runCommand = function (commandString) {
   const [command, ...args] = commandString.split(" ");
   const listOfCallbacks = [executeCd, executePwd, executeEcho,
-    executeExit, executeLs, executeTouch];
-  const listOfCommands = ['cd', 'pwd', 'echo', 'exit', 'ls', 'touch']
+    executeExit, executeLs, executeTouch, executeRm];
+  const listOfCommands = ['cd', 'pwd', 'echo', 'exit', 'ls', 'touch', 'rm'];
+
   // use array.find
+  // cd .., rm
+  const index = listOfCommands.indexOf(command);
+  return listOfCallbacks[index](args);
 
-  for (let index = 0; index < listOfCommands.length; index++) {
-    if (listOfCommands[index] === command) {
-      return listOfCallbacks[index](args);
-    }
-  }
-
-  return "no such command...";
 }
 
 const executeShell = function () {
