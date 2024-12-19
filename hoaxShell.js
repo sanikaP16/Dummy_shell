@@ -72,7 +72,9 @@ const getCurrentCommand = executeCommand([
 const executeShell = function () {
   while (continueToShell) {
     const userCommand = prompt(shellPrompt + symbol);
-    if (!userCommand.trim()) continue;
+    if (!userCommand.trim()) {
+      continue;
+    }
 
     const resultOfRunningCommand = getCurrentCommand(userCommand);
 
