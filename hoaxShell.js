@@ -1,7 +1,7 @@
 let continueToShell = true;
 let shellPrompt = 'sanika//hoaxShell ';
 let currentDirectory = '~/';
-const symbol = ' %'
+const symbol = ' %';
 const file = [];
 
 const executeCd = function (args) {
@@ -12,57 +12,62 @@ const executeCd = function (args) {
   currentDirectory = currentDirectory.concat("/", args.join("/"));
   shellPrompt = shellPrompt.concat("/", args);
   return;
-}
+};
 
 const executePwd = function () {
   return currentDirectory;
-}
+};
 
 const executeEcho = function (args) {
   return args.join(" ");
-}
+};
 
 const executeExit = function () {
   continueToShell = false;
-  return "Thank you....\n";
-}
+  return "Shell terminated....\n";
+};
 
 const executeTouch = function (args) {
   file.push(...args);
   return;
-}
+};
 
 const executeLs = function () {
   return file.join("  ");
-}
+};
 
 const executeRm = function (args) {
   const fileName = args.join(" ");
-  return file.filter((element) => element !== fileName).join(" ");
-}
+  const indexOfFile = file.indexOf(fileName);
+  file.shift(indexOfFile, 1);
 
-const runCommand = function (commandString) {
-  const commandMapping = [
-    ['cd', executeCd],
-    ['pwd', executePwd],
-    ['echo', executeEcho],
-    ['ls', executeLs],
-    ['touch', executeTouch],
-    ['rm', executeRm],
-    ['exit', executeExit]
-  ];
+  return;
+};
 
-  const [command, ...args] = commandString.split(" ");
+const executeCommand = function (commandMapping) {
+  return function (commandString) {
+    const [command, ...args] = commandString.split(" ");
 
-  const doesCommandExits = commandMapping.find(
-    (element) => element[0] === command);
+    const doesCommandExits = commandMapping.find(
+      (element) => element[0] === command);
 
-  if (doesCommandExits) {
-    return doesCommandExits[1](args);
-  }
+    if (doesCommandExits) {
+      return doesCommandExits[1](args);
+    }
 
-  return "no such command...";
-}
+    return "no such command...";
+  };
+};
+
+const runCommand = executeCommand([
+  ['cd', executeCd],
+  ['pwd', executePwd],
+  ['echo', executeEcho],
+  ['ls', executeLs],
+  ['touch', executeTouch],
+  ['rm', executeRm],
+  ['exit', executeExit]
+]);
 
 const executeShell = function () {
   while (continueToShell) {
