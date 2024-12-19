@@ -1,7 +1,7 @@
 let continueToShell = true;
-const shellPrompt = 'hoaxShell ';
+let shellPrompt = 'sanika//hoaxShell ';
 let currentDirectory = '~/';
-const symbol = '% ';
+const symbol = ' %'
 const file = [];
 
 const executeCd = function (args) {
@@ -10,7 +10,7 @@ const executeCd = function (args) {
   }
 
   currentDirectory = currentDirectory.concat("/", args.join("/"));
-
+  shellPrompt = shellPrompt.concat("/", args);
   return;
 }
 
@@ -29,7 +29,7 @@ const executeExit = function () {
 
 const executeTouch = function (args) {
   file.push(...args);
-  return
+  return;
 }
 
 const executeLs = function () {
@@ -37,21 +37,31 @@ const executeLs = function () {
 }
 
 const executeRm = function (args) {
-  const fileName = args.join(" ")
+  const fileName = args.join(" ");
   return file.filter((element) => element !== fileName).join(" ");
 }
 
 const runCommand = function (commandString) {
+  const commandMapping = [
+    ['cd', executeCd],
+    ['pwd', executePwd],
+    ['echo', executeEcho],
+    ['ls', executeLs],
+    ['touch', executeTouch],
+    ['rm', executeRm],
+    ['exit', executeExit]
+  ];
+
   const [command, ...args] = commandString.split(" ");
-  const listOfCallbacks = [executeCd, executePwd, executeEcho,
-    executeExit, executeLs, executeTouch, executeRm];
-  const listOfCommands = ['cd', 'pwd', 'echo', 'exit', 'ls', 'touch', 'rm'];
 
-  // use array.find
-  // cd .., rm
-  const index = listOfCommands.indexOf(command);
-  return listOfCallbacks[index](args);
+  const doesCommandExits = commandMapping.find(
+    (element) => element[0] === command);
 
+  if (doesCommandExits) {
+    return doesCommandExits[1](args);
+  }
+
+  return "no such command...";
 }
 
 const executeShell = function () {
@@ -60,10 +70,9 @@ const executeShell = function () {
     if (!userCommand.trim()) continue;
 
     const resultOfRunningCommand = runCommand(userCommand);
+
     if (resultOfRunningCommand !== undefined) {
       console.log(resultOfRunningCommand);
     }
   }
-}
-
-executeShell();
+}();
