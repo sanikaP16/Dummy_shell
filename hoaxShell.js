@@ -2,15 +2,15 @@ let continueToShell = true;
 let shellPrompt = 'sanika//hoaxShell ';
 let currentDirectory = '~/';
 const symbol = ' %';
-const file = [];
+const listOfFiles = [];
 
-const executeCd = function (args) {
-  if (args.length === 0) {
+const executeCd = function (arguments) {
+  if (arguments.length === 0) {
     return "Error : no dirctory specified.";
   }
 
-  currentDirectory = currentDirectory.concat("/", args.join("/"));
-  shellPrompt = shellPrompt.concat("/", args);
+  currentDirectory = currentDirectory.concat("/", arguments.join("/"));
+  shellPrompt = shellPrompt.concat("/", arguments);
   return;
 };
 
@@ -18,8 +18,8 @@ const executePwd = function () {
   return currentDirectory;
 };
 
-const executeEcho = function (args) {
-  return args.join(" ");
+const executeEcho = function (arguments) {
+  return arguments.join(" ");
 };
 
 const executeExit = function () {
@@ -27,39 +27,39 @@ const executeExit = function () {
   return "Shell terminated....\n";
 };
 
-const executeTouch = function (args) {
-  file.push(...args);
+const executeTouch = function (arguments) {
+  listOfFiles.push(...arguments);
   return;
 };
 
 const executeLs = function () {
-  return file.join("  ");
+  return listOfFiles.join("  ");
 };
 
-const executeRm = function (args) {
-  const fileName = args.join(" ");
-  const indexOfFile = file.indexOf(fileName);
-  file.shift(indexOfFile, 1);
+const executeRm = function (arguments) {
+  const fileName = arguments.join(" ");
+  const indexOfFile = listOfFiles.indexOf(fileName);
+  listOfFiles.shift(indexOfFile, 1);
 
   return;
 };
 
 const executeCommand = function (commandMapping) {
   return function (commandString) {
-    const [command, ...args] = commandString.split(" ");
+    const [command, ...arguments] = commandString.split(" ");
 
     const doesCommandExits = commandMapping.find(
       (element) => element[0] === command);
 
     if (doesCommandExits) {
-      return doesCommandExits[1](args);
+      return doesCommandExits[1](arguments);
     }
 
     return "no such command...";
   };
 };
 
-const runCommand = executeCommand([
+const getCurrentCommand = executeCommand([
   ['cd', executeCd],
   ['pwd', executePwd],
   ['echo', executeEcho],
@@ -74,7 +74,7 @@ const executeShell = function () {
     const userCommand = prompt(shellPrompt + symbol);
     if (!userCommand.trim()) continue;
 
-    const resultOfRunningCommand = runCommand(userCommand);
+    const resultOfRunningCommand = getCurrentCommand(userCommand);
 
     if (resultOfRunningCommand !== undefined) {
       console.log(resultOfRunningCommand);
