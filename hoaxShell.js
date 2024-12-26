@@ -4,7 +4,7 @@ let currentDirectory = '~/';
 const symbol = ' %';
 const listOfFiles = [];
 
-const executeCd = function (arguments) {
+const executeCd = arguments => {
   if (arguments.length === 0) {
     return "Error : no dirctory specified.";
   }
@@ -14,29 +14,23 @@ const executeCd = function (arguments) {
   return;
 };
 
-const executePwd = function () {
-  return currentDirectory;
-};
+const executePwd = () => currentDirectory;
 
-const executeEcho = function (arguments) {
-  return arguments.join(" ");
-};
+const executeEcho = (arguments) => arguments.join(" ");
 
-const executeExit = function () {
+const executeExit = () => {
   continueToShell = false;
   return "Shell terminated....\n";
 };
 
-const executeTouch = function (arguments) {
+const executeTouch = (arguments) => {
   listOfFiles.push(...arguments);
   return;
 };
 
-const executeLs = function () {
-  return listOfFiles.join("  ");
-};
+const executeLs = () => listOfFiles.join("  ");
 
-const executeRm = function (arguments) {
+const executeRm = (arguments) => {
   const fileName = arguments.join(" ");
   const indexOfFile = listOfFiles.indexOf(fileName);
   listOfFiles.shift(indexOfFile, 1);
@@ -44,7 +38,7 @@ const executeRm = function (arguments) {
   return;
 };
 
-const executeCommand = function (commandMapping) {
+const executeCommand = (commandMapping) => {
   return function (commandString) {
     const [command, ...arguments] = commandString.split(" ");
 
@@ -59,6 +53,10 @@ const executeCommand = function (commandMapping) {
   };
 };
 
+const executeDeno = () => {
+  console.log("deno/nmydeno");
+}
+
 const getCurrentCommand = executeCommand([
   ['cd', executeCd],
   ['pwd', executePwd],
@@ -66,10 +64,11 @@ const getCurrentCommand = executeCommand([
   ['ls', executeLs],
   ['touch', executeTouch],
   ['rm', executeRm],
-  ['exit', executeExit]
+  ['exit', executeExit],
+  ['deno', executeDeno]
 ]);
 
-const executeShell = function () {
+const executeShell = () => {
   while (continueToShell) {
     const userCommand = prompt(shellPrompt + symbol);
     if (!userCommand.trim()) {
@@ -82,4 +81,6 @@ const executeShell = function () {
       console.log(resultOfRunningCommand);
     }
   }
-}();
+};
+
+executeShell();
